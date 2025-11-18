@@ -1,0 +1,17 @@
+Python/Django Specific Files
+
+*.pyc
+pycache/
+manage.py
+db.sqlite3
+.DS_Store
+
+Virtual Environment
+
+venv/
+env/
+
+IDE/Editor Files
+
+.vscode/
+.idea/
