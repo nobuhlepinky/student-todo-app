@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+{% block content %}
+<div class="login-container">
+  <h1 class="login-title">Log in to Student Productivity</h1>
+
+  <!-- Display form errors -->
+  {% if form.errors %}
+  <p class="error-message">
+    Your username and password didn't match. Please try again.
+  </p>
+  {% endif %}
+
+  <!-- Login Form -->
+  <form method="post" action="{% url 'login' %}">
+    {% csrf_token %}
+
+    <div class="form-group">
+      <label for="{{ form.username.id_for_label }}">Username</label>
+      {{ form.username|safe }}
+    </div>
+
+    <div class="form-group">
+      <label for="{{ form.password.id_for_label }}">Password</label>
+      {{ form.password|safe }}
+    </div>
+
+    <button type="submit" class="login-button">Login</button>
+
+    <!-- Redirect to the next page after login, if specified -->
+    <input type="hidden" name="next" value="{{ next }}" />
+  </form>
+
+  <div class="login-links">
+    <a href="{% url 'admin:index' %}">Go to Admin Site</a>
+  </div>
+</div>
+
+<style>
+  /* --- Professional Deep Slate Blue Aesthetic (Admin-Inspired) ---
+    Using a clean, light background with a deep, authoritative blue accent.
+    */
+  /* Base background color for the page */
+  body {
+    background-color: #f7f9fb !important; /* Very light, professional gray-blue */
+  }
+
+  .content-container {
+    /* This keeps the login card centered and small */
+    max-width: 400px;
+    margin-top: 5rem;
+    background-color: transparent;
+    padding: 0;
+  }
+
+  .login-container {
+    background-color: #ffffff; /* Crisp white card background */
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1); /* Slightly deeper shadow for contrast */
+    text-align: center;
+  }
+
+  .login-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #334c68; /* Deep Slate Blue */
+    margin-bottom: 2rem;
+  }
+
+  .error-message {
+    color: #a21c38; /* Darker red for good contrast */
+    background-color: #fde8ed;
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 1.5rem;
+    border: 1px solid #f9ccd6;
+  }
+
+  .form-group {
+    margin-bottom: 1.5rem;
+    text-align: left;
+  }
+
+  .form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #4a5568; /* Dark text */
+  }
+
+  /* Input field focus styling */
+  .form-group .form-control {
+    border: 1px solid #e2e8f0; /* Light border */
+    padding: 10px 12px;
+    border-radius: 6px;
+    width: 100%;
+    box-sizing: border-box;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .form-group .form-control:focus {
+    border-color: #334c68; /* Deep Slate Blue focus glow */
+    box-shadow: 0 0 0 2px rgba(51, 76, 104, 0.2);
+    outline: none;
+  }
+
+  .login-button {
+    width: 100%;
+    padding: 12px;
+    background-color: #334c68; /* Deep Slate Blue button */
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-top: 1rem;
+  }
+
+  .login-button:hover {
+    background-color: #243c5a; /* Slightly darker on hover */
+  }
+
+  .login-links {
+    margin-top: 2rem;
+    font-size: 0.95rem;
+  }
+
+  .login-links a {
+    color: #334c68;
+    text-decoration: none;
+    transition: color 0.2s;
+    font-weight: 500;
+  }
+
+  .login-links a:hover {
+    color: #243c5a;
+    text-decoration: underline;
+  }
+</style>
+{% endblock %}

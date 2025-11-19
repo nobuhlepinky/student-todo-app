@@ -1,0 +1,9 @@
+**/*.html
+**/*.django.html
+node_modules
+dist
+build
+*.egg-info
+__pycache__
+.git
+db.sqlite3
