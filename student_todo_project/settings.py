@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'todo_app.apps.TodoAppConfig',
 ]
 
 MIDDLEWARE = [
@@ -120,3 +121,17 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+
+# URL to redirect to after a user successfully logs in.
+# We direct them to the 'dashboard' URL, which we mapped to the root ('/').
+LOGIN_REDIRECT_URL = 'todo_app:dashboard'
+
+# URL to redirect to after a user successfully logs out.
+# We direct them to the 'login' page again.
+LOGOUT_REDIRECT_URL = 'login'
+
+# The URL where unauthenticated users are sent when they try to access a protected page.
+# This points to the default Django login URL provided by django.contrib.auth.urls.
+LOGIN_URL = 'login'
