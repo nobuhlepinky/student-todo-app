@@ -1,26 +1,36 @@
-from django import forms
-# Ensure you have 'Task' model imported here (assuming it was created in models.py)
-from .models import Task 
-# We'll also define the NoteForm here for the next step, 
-# but for now, TaskForm is the critical fix.
 
+from django import forms
+from .models import Task, Note
+
+# --- Task Form (Existing) ---
 class TaskForm(forms.ModelForm):
     """
-    A ModelForm linked to the Task model. 
-    This form is used for creating and updating tasks.
+    Form for creating and updating Task instances.
     """
     class Meta:
-        # Use the Task model as the source for the form fields
         model = Task
-        
-        # Specify which fields from the model should be included in the form
+        # Fields that the user can modify on the form
         fields = ['title', 'description', 'due_date', 'is_completed']
-        
-        # Optional: Add custom styling or widgets
+        # Customize the input widgets for better user experience
         widgets = {
-            # Use DateInput widget to show a calendar picker for the due_date
-            'due_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
-            # Add a class for basic styling to other fields
-            'title': forms.TextInput(attrs={'class': 'form-control'}),
-            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+            'title': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Task Title'}),
+            'description': forms.Textarea(attrs={'class': 'form-textarea', 'placeholder': 'Details about the task...'}),
+            'due_date': forms.DateInput(attrs={'class': 'form-input', 'type': 'date'}),
+        }
+
+
+# --- Note Form (NEW) ---
+class NoteForm(forms.ModelForm):
+    """
+    Form for creating and updating Note instances.
+    """
+    class Meta:
+        model = Note
+        # Fields that the user can modify on the form
+        fields = ['title', 'content']
+        # Customize the input widgets
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Note Title (e.g., Chapter 3 Summary)'}),
+            # Textarea for the main content, giving it a larger feel
+            'content': forms.Textarea(attrs={'class': 'form-textarea large', 'placeholder': 'Start writing your notes here... (Supports Markdown)', 'rows': 15}),
         }

@@ -1,97 +1,89 @@
 
 
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
-from .models import Task, Note # <-- CRITICAL: Imports your data models
-from .forms import TaskForm    # <-- CRITICAL: Imports the Task Form
-from django.db.models import Count 
+from django.shortcuts import render
+from django.views.generic.list import ListView
+from django.views.generic.detail import DetailView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin
 
-@login_required
-def dashboard(request):
+from .models import Note # Assuming Note is defined in models.py
+
+# --- Note Management Views ---
+
+class NoteList(LoginRequiredMixin, ListView):
     """
-    The main dashboard view. Fetches key metrics for the user to display 
-    upon login. This requires the user to be logged in (@login_required).
+    Displays a list of all notes belonging to the currently logged-in user.
     """
-    # 1. Fetch user-specific tasks and notes
-    user_tasks = Task.objects.filter(user=request.user)
-    
-    # 2. Calculate metrics for the cards
-    total_tasks = user_tasks.count()
-    completed_tasks = user_tasks.filter(is_completed=True).count()
-    pending_tasks = total_tasks - completed_tasks
-    
-    # 3. Fetch recent notes (top 5, newest first)
-    # We use a placeholder here as the Note model is created but not implemented yet.
-    recent_notes = Note.objects.filter(user=request.user).order_by('-created_at')[:5]
+    model = Note
+    context_object_name = 'notes'
+    template_name = 'todo_app/note_list.html'
 
-    context = {
-        'total_tasks': total_tasks,
-        'completed_tasks': completed_tasks,
-        'pending_tasks': pending_tasks,
-        'recent_notes': recent_notes,
-    } 
-    return render(request, 'dashboard.html', context)
+    def get_context_data(self, **kwargs):
+        """
+        Ensures only the user's notes are displayed.
+        """
+        context = super().get_context_data(**kwargs)
+        # Filter notes to only show the ones owned by the request user, ordered by creation date
+        context['notes'] = context['notes'].filter(user=self.request.user).order_by('-created_at')
+        return context
 
-
-# --- Task Management Views (Already created) ---
-
-@login_required
-def task_list(request):
+class NoteDetail(LoginRequiredMixin, DetailView):
     """
-    Displays a list of all tasks for the logged-in user.
+    Displays the details of a single note.
     """
-    tasks = Task.objects.filter(user=request.user).order_by('due_date')
-    context = {'tasks': tasks}
-    return render(request, 'tasks/task_list.html', context)
+    model = Note
+    context_object_name = 'note'
+    template_name = 'todo_app/note_detail.html'
 
+    def get_queryset(self):
+        """
+        Ensures a user can only view their own notes.
+        """
+        return self.model.objects.filter(user=self.request.user)
 
-@login_required
-def task_create(request):
-    """Handles the creation of a new Task."""
-    if request.method == 'POST':
-        form = TaskForm(request.POST)
-        if form.is_valid():
-            task = form.save(commit=False)
-            task.user = request.user
-            task.save()
-            return redirect('todo_app:task_list')
-    else:
-        form = TaskForm()
-        
-    context = {'form': form, 'page_title': 'Add New Task'}
-    return render(request, 'tasks/task_form.html', context)
+class NoteCreate(LoginRequiredMixin, CreateView):
+    """
+    Handles the creation of a new note.
+    """
+    model = Note
+    fields = ['title', 'content'] # Fields to be displayed in the form
+    template_name = 'todo_app/note_form.html'
+    success_url = reverse_lazy('notes') # Redirect to the notes list upon successful creation
 
+    def form_valid(self, form):
+        """
+        Automatically sets the user field to the logged-in user before saving.
+        """
+        form.instance.user = self.request.user
+        return super(NoteCreate, self).form_valid(form)
 
-@login_required
-def task_update(request, pk):
-    """Handles updating an existing Task."""
-    task = get_object_or_404(Task, pk=pk, user=request.user)
-    
-    if request.method == 'POST':
-        form = TaskForm(request.POST, instance=task)
-        if form.is_valid():
-            form.save()
-            return redirect('todo_app:task_list')
-    else:
-        form = TaskForm(instance=task)
-        
-    context = {'form': form, 'page_title': 'Edit Task'}
-    return render(request, 'tasks/task_form.html', context)
+class NoteUpdate(LoginRequiredMixin, UpdateView):
+    """
+    Handles the updating of an existing note.
+    """
+    model = Note
+    fields = ['title', 'content']
+    template_name = 'todo_app/note_form.html'
+    success_url = reverse_lazy('notes')
 
+    def get_queryset(self):
+        """
+        Ensures a user can only update their own notes.
+        """
+        return self.model.objects.filter(user=self.request.user)
 
-@login_required
-def task_delete(request, pk):
-    """Handles deleting a task and confirms completion status update."""
-    task = get_object_or_404(Task, pk=pk, user=request.user)
+class NoteDelete(LoginRequiredMixin, DeleteView):
+    """
+    Handles the deletion of a note.
+    """
+    model = Note
+    context_object_name = 'note'
+    template_name = 'todo_app/note_delete.html'
+    success_url = reverse_lazy('notes')
 
-    if request.method == 'POST':
-        if 'toggle_complete' in request.POST:
-            task.is_completed = not task.is_completed
-            task.save()
-            return redirect('todo_app:task_list')
-
-        elif 'delete_task' in request.POST:
-            task.delete()
-            return redirect('todo_app:task_list')
-    
-    return redirect('todo_app:task_list')
+    def get_queryset(self):
+        """
+        Ensures a user can only delete their own notes.
+        """
+        return self.model.objects.filter(user=self.request.user)

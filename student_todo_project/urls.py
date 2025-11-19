@@ -18,8 +18,11 @@ from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
-    path('admin/', admin.site.urls),    
-    path('accounts/', include('django.contrib.auth.urls')),
-    
+    path('admin/', admin.site.urls),
+    # The 'todo_app/' path handles all application logic (Tasks, Notes, Dashboard)
     path('', include('todo_app.urls')),
+    
+    # The 'login/', 'logout/', and 'register/' paths use Django's built-in auth views
+    # handled directly in the todo_app's urls.py now.
+    # The main project's urls.py just includes the app's urls.
 ]

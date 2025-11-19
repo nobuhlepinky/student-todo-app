@@ -1,28 +1,19 @@
 from django.urls import path
-from . import views
-
-# Set the app name for URL namespace separation (good practice)
-app_name = 'todo_app'
+from .views import (
+    TaskListView, TaskCreateView, TaskUpdateView, TaskDeleteView,
+    NoteListView, NoteCreateView, NoteUpdateView, NoteDeleteView
+)
 
 urlpatterns = [
-    # Main Dashboard (Root of the app '/')
-    path('', views.dashboard, name='dashboard'),
-    
-    # -------------------------------------------------
-    # Task Management URLs
-    # -------------------------------------------------
-    # R - Read (List all tasks)
-    path('tasks/', views.task_list, name='task_list'),
-    
-    # C - Create (Add a new task)
-    path('tasks/create/', views.task_create, name='task_create'),
-    
-    # U - Update (Edit an existing task, needs the task's ID: pk)
-    path('tasks/update/<int:pk>/', views.task_update, name='task_update'),
-    
-    # D - Delete / Toggle Complete (Handles deleting or toggling status, needs the task's ID)
-    path('tasks/delete/<int:pk>/', views.task_delete, name='task_delete'),
-    
-    # Note Paths will go here later:
-    # path('notes/', views.note_list, name='note_list'),
+    # --- Task Management URLs ---
+    path('', TaskListView.as_view(), name='tasks'),
+    path('task-create/', TaskCreateView.as_view(), name='task-create'),
+    path('task-update/<int:pk>/', TaskUpdateView.as_view(), name='task-update'),
+    path('task-delete/<int:pk>/', TaskDeleteView.as_view(), name='task-delete'),
+
+    # --- Note Management URLs (NEW) ---
+    path('notes/', NoteListView.as_view(), name='notes'),
+    path('note-create/', NoteCreateView.as_view(), name='note-create'),
+    path('note-update/<int:pk>/', NoteUpdateView.as_view(), name='note-update'),
+    path('note-delete/<int:pk>/', NoteDeleteView.as_view(), name='note-delete'),
 ]

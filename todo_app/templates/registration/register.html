@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+
+{% block title %}Register{% endblock %}
+
+{% block content %}
+<div class="register-container">
+    <h1 class="register-title">Create Your Student Account</h1>
+    
+    <form method="post">
+        {% csrf_token %}
+        
+        <!-- Display non-field errors (like password mismatch) -->
+        {% if form.non_field_errors %}
+            <div class="error-message">
+                {% for error in form.non_field_errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <!-- Render all fields in the form -->
+        {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                    {% for error in field.errors %}
+                        <small class="field-error">{{ error }}</small>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        {% endfor %}
+
+        <button type="submit" class="register-button">Register</button>
+    </form>
+    
+    <div class="register-links">
+        Already have an account? <a href="{% url 'login' %}">Log In</a>
+    </div>
+</div>
+
+<style>
+    /* Styling for the registration page, consistent with login.html */
+    
+    .content-container {
+        /* Make the container slightly wider for the registration form (more fields) */
+        max-width: 450px;
+        margin-top: 3rem; 
+        background-color: transparent; 
+        padding: 0;
+    }
+    
+    .register-container {
+        background-color: #ffffff; 
+        padding: 30px 40px;
+        border-radius: 12px;
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1); 
+        text-align: center;
+    }
+    
+    .register-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #334C68; /* Deep Slate Blue */
+        margin-bottom: 2rem;
+    }
+
+    .error-message {
+        color: #a21c38; 
+        background-color: #fde8ed;
+        padding: 10px;
+        border-radius: 6px;
+        margin-bottom: 1.5rem;
+        border: 1px solid #f9ccd6;
+        text-align: left;
+    }
+    
+    .field-error {
+        color: #a21c38;
+        display: block;
+        margin-top: 5px;
+        font-size: 0.9em;
+        text-align: left;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+        text-align: left;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: #4a5568; 
+    }
+    
+    /* Apply base styling to form inputs */
+    .form-group input {
+        border: 1px solid #e2e8f0; 
+        padding: 10px 12px;
+        border-radius: 6px;
+        width: 100%;
+        box-sizing: border-box;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    
+    .form-group input:focus {
+        border-color: #334C68; 
+        box-shadow: 0 0 0 2px rgba(51, 76, 104, 0.2);
+        outline: none;
+    }
+
+    .register-button {
+        width: 100%;
+        padding: 12px;
+        background-color: #334C68; 
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.2s;
+        margin-top: 1rem;
+    }
+    
+    .register-button:hover {
+        background-color: #243c5a; 
+    }
+    
+    .register-links {
+        margin-top: 2rem;
+        font-size: 0.95rem;
+        color: #4a5568;
+    }
+    
+    .register-links a {
+        color: #334C68;
+        text-decoration: none;
+        transition: color 0.2s;
+        font-weight: 500;
+    }
+    
+    .register-links a:hover {
+        color: #243c5a;
+        text-decoration: underline;
+    }
+</style>
+{% endblock content %}

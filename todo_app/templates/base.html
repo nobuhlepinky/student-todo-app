@@ -1,147 +1,154 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student ToDo | {% block title %}{% endblock %}</title>
-
+    
     <!-- Using a single block of standard CSS for styling the whole application -->
     <style>
-      /* Base Styles */
-      body {
-        font-family: "Inter", sans-serif;
-        background-color: #f4f7f6;
-        margin: 0;
-        padding: 0;
-        min-height: 100vh;
-      }
+        /* Base Styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f9fb; /* Consistent with login page */
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
 
-      /* Navbar Styling */
-      .navbar {
-        background-color: #4b5563; /* Indigo */
-        padding: 1rem 2rem;
-        color: white;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
+        /* Navbar Styling */
+        .navbar {
+            background-color: #334C68; /* Deep Slate Blue */
+            padding: 1rem 2rem;
+            color: white;
+            box-shadow: 0 4px 8px -1px rgba(0, 0, 0, 0.15); /* More prominent shadow */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-      .navbar-title {
-        font-size: 1.5rem;
-        font-weight: 700;
-        text-decoration: none;
-        color: white;
-        transition: opacity 0.2s;
-      }
+        .navbar-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-decoration: none;
+            color: white;
+            transition: opacity 0.2s;
+        }
 
-      .navbar-title:hover {
-        opacity: 0.9;
-      }
+        .navbar-title:hover {
+            opacity: 0.85;
+        }
 
-      .navbar-links {
-        display: flex;
-        gap: 1.5rem;
-        align-items: center;
-      }
+        .navbar-links {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
 
-      .navbar-links a,
-      .navbar-links span {
-        color: white;
-        text-decoration: none;
-        font-weight: 500;
-        transition: color 0.2s;
-      }
+        .navbar-links a, .navbar-links span {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
 
-      .navbar-links a:hover {
-        color: #d1d5db; /* Light gray on hover */
-      }
+        .navbar-links a:hover {
+            color: #c3d2e2; /* Lighter blue on hover */
+        }
 
-      .logout-form button {
-        background: none;
-        border: none;
-        color: white;
-        font-weight: 500;
-        cursor: pointer;
-        padding: 0;
-        font-size: 1rem;
-        transition: color 0.2s;
-      }
+        .logout-form button {
+            background: none;
+            border: 1px solid white; /* Add a subtle border to the button */
+            border-radius: 4px;
+            color: white;
+            font-weight: 500;
+            cursor: pointer;
+            padding: 5px 10px;
+            font-size: 1rem;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+        
+        .logout-form button:hover {
+             background-color: rgba(255, 255, 255, 0.1);
+             border-color: #c3d2e2;
+        }
 
-      .logout-form button:hover {
-        color: #d1d5db;
-      }
+        /* Main Content Container */
+        .content-container {
+            max-width: 1100px;
+            margin: 2rem auto;
+            padding: 1.5rem;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
 
-      /* Main Content Container */
-      .content-container {
-        max-width: 1100px;
-        margin: 2rem auto;
-        padding: 1.5rem;
-        background-color: white;
-        border-radius: 12px;
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-      }
-
-      /* Common Form Styling (for Task/Note forms) */
-      .form-control {
-        width: 100%;
-        padding: 10px;
-        border: 1px solid #d1d5db;
-        border-radius: 6px;
-        box-sizing: border-box;
-        margin-top: 5px;
-        margin-bottom: 1rem;
-      }
-      .form-group label {
-        display: block;
-        margin-bottom: 5px;
-        font-weight: 500;
-        color: #4b5563;
-      }
-      .submit-button {
-        background-color: #4f46e5;
-        color: white;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-        font-weight: 600;
-        transition: background-color 0.2s;
-      }
-      .submit-button:hover {
-        background-color: #4338ca;
-      }
+        /* Common Form Styling */
+        .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            box-sizing: border-box;
+            margin-top: 5px;
+            margin-bottom: 1rem;
+        }
+        .form-control:focus, .form-group textarea:focus {
+            border-color: #334C68;
+            box-shadow: 0 0 0 2px rgba(51, 76, 104, 0.2);
+            outline: none;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #4a5568;
+        }
+        .submit-button {
+            background-color: #334C68;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+        .submit-button:hover {
+            background-color: #243c5a;
+        }
     </style>
-
+    
     <!-- Add any app-specific styles here -->
     {% block extra_css %}{% endblock %}
-  </head>
-  <body>
+</head>
+<body>
+    
     <nav class="navbar">
-      <a href="{% url 'todo_app:dashboard' %}" class="navbar-title"
-        >📝 Student Productivity</a
-      >
-
-      <div class="navbar-links">
-        <!-- Check if the user is logged in -->
-        {% if user.is_authenticated %}
-        <span>Hello, **{{ user.username }}**</span>
-
-        <!-- Logout Form (required for Django security) -->
-        <form class="logout-form" action="{% url 'logout' %}" method="POST">
-          {% csrf_token %}
-          <button type="submit">Logout</button>
-        </form>
-        {% else %}
-        <!-- This will now link to your working login page -->
-        <a href="{% url 'login' %}">Login</a>
-        {% endif %}
-      </div>
+        <a href="{% url 'todo_app:dashboard' %}" class="navbar-title">📝 Student Productivity</a>
+        
+        <div class="navbar-links">
+            <!-- Check if the user is logged in -->
+            {% if user.is_authenticated %}
+                <span>Hello, **{{ user.username }}**</span>
+                
+                <!-- Logout Form -->
+                <form class="logout-form" action="{% url 'logout' %}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit">Logout</button>
+                </form>
+            {% else %}
+                <!-- Now include both Register and Login links -->
+                <a href="{% url 'register' %}">Register</a> 
+                <a href="{% url 'login' %}">Login</a> 
+            {% endif %}
+        </div>
     </nav>
 
     <div class="content-container">
-      <!-- Main content of the page goes here -->
-      {% block content %}{% endblock %}
+        <!-- Main content of the page goes here -->
+        {% block content %}{% endblock %}
     </div>
-  </body>
+
+</body>
 </html>
