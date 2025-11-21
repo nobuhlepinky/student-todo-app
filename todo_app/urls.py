@@ -1,19 +1,26 @@
 from django.urls import path
-from .views import (
-    TaskListView, TaskCreateView, TaskUpdateView, TaskDeleteView,
-    NoteListView, NoteCreateView, NoteUpdateView, NoteDeleteView
-)
+from . import views
+
+# Set the namespace for this application
+app_name = 'note_app'
 
 urlpatterns = [
-    # --- Task Management URLs ---
-    path('', TaskListView.as_view(), name='tasks'),
-    path('task-create/', TaskCreateView.as_view(), name='task-create'),
-    path('task-update/<int:pk>/', TaskUpdateView.as_view(), name='task-update'),
-    path('task-delete/<int:pk>/', TaskDeleteView.as_view(), name='task-delete'),
+    # --- General/Index Views ---
+    path('', views.index, name='index'),
 
-    # --- Note Management URLs (NEW) ---
-    path('notes/', NoteListView.as_view(), name='notes'),
-    path('note-create/', NoteCreateView.as_view(), name='note-create'),
-    path('note-update/<int:pk>/', NoteUpdateView.as_view(), name='note-update'),
-    path('note-delete/<int:pk>/', NoteDeleteView.as_view(), name='note-delete'),
+    # --- Note URLs (Study Notes) ---
+    path('notes/', views.NoteListView.as_view(), name='note_list'),
+    path('notes/create/', views.NoteCreateView.as_view(), name='note_create'),
+    path('notes/<int:pk>/', views.NoteDetailView.as_view(), name='note_detail'),
+    path('notes/<int:pk>/update/', views.NoteUpdateView.as_view(), name='note_update'),
+    path('notes/<int:pk>/delete/', views.NoteDeleteView.as_view(), name='note_delete'),
+    
+    # --- Task URLs (To-Do List) ---
+    path('tasks/', views.TaskListView.as_view(), name='task_list'),
+    path('tasks/create/', views.TaskCreateView.as_view(), name='task_create'),
+    path('tasks/<int:pk>/update/', views.TaskUpdateView.as_view(), name='task_update'),
+    path('tasks/<int:pk>/delete/', views.TaskDeleteView.as_view(), name='task_delete'),
+    
+    # Custom view for toggling task completion status
+    path('tasks/<int:pk>/toggle/', views.task_toggle_complete, name='task_toggle_complete'),
 ]

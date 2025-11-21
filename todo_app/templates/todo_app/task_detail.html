@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block title %}{{ task.title }} - Task Detail{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <!-- Header with Task Title and Status -->
+    <div class="bg-white p-6 rounded-xl shadow-2xl border-t-4 
+        {% if task.is_completed %}border-green-500{% elif task.priority == 'High' %}border-red-500{% else %}border-primary{% endif %}
+        mb-8">
+        
+        <h1 class="text-3xl font-extrabold text-gray-900 mb-2 break-words">
+            {{ task.title }}
+        </h1>
+        
+        <div class="flex items-center space-x-4 mt-3">
+            <!-- Status Badge -->
+            <span class="px-3 py-1 text-sm font-semibold rounded-full 
+                {% if task.is_completed %}bg-green-100 text-green-800{% else %}bg-yellow-100 text-yellow-800{% endif %}">
+                <i data-lucide="{% if task.is_completed %}check-circle{% else %}loader-2{% endif %}" class="w-4 h-4 inline-block mr-1"></i>
+                {% if task.is_completed %}Completed{% else %}Pending{% endif %}
+            </span>
+
+            <!-- Priority Badge -->
+            <span class="px-3 py-1 text-sm font-semibold rounded-full 
+                {% if task.priority == 'High' %}bg-red-100 text-red-800{% elif task.priority == 'Medium' %}bg-accent/20 text-accent-800{% else %}bg-blue-100 text-blue-800{% endif %}">
+                <i data-lucide="bell" class="w-4 h-4 inline-block mr-1"></i>
+                Priority: {{ task.priority }}
+            </span>
+        </div>
+    </div>
+
+    <!-- Task Details Card -->
+    <div class="bg-white p-8 rounded-xl shadow-lg space-y-6">
+        
+        <h2 class="text-2xl font-semibold text-gray-800 border-b pb-2 flex items-center">
+            <i data-lucide="info" class="w-6 h-6 mr-2 text-secondary"></i>
+            Details
+        </h2>
+
+        <!-- Description -->
+        <div>
+            <p class="text-sm font-medium text-gray-600 mb-1">Description:</p>
+            <div class="p-4 bg-gray-50 rounded-lg border border-gray-200 text-gray-800 leading-relaxed whitespace-pre-wrap">
+                {% if task.description %}
+                    {{ task.description }}
+                {% else %}
+                    <span class="text-gray-400 italic">No detailed description provided.</span>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Metadata Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-4 border-t">
+            
+            <!-- Due Date -->
+            <div>
+                <p class="text-sm font-medium text-gray-600 flex items-center mb-1">
+                    <i data-lucide="calendar" class="w-4 h-4 mr-1 text-primary"></i> Due Date:
+                </p>
+                <p class="text-lg font-bold text-gray-800">
+                    {% if task.due_date %}{{ task.due_date|date:"F j, Y" }}{% else %}N/A{% endif %}
+                </p>
+            </div>
+
+            <!-- Created At -->
+            <div>
+                <p class="text-sm font-medium text-gray-600 flex items-center mb-1">
+                    <i data-lucide="zap" class="w-4 h-4 mr-1 text-secondary"></i> Created On:
+                </p>
+                <p class="text-lg font-bold text-gray-800">
+                    {{ task.created_at|date:"M d, Y" }}
+                </p>
+            </div>
+
+            <!-- Last Updated -->
+            <div>
+                <p class="text-sm font-medium text-gray-600 flex items-center mb-1">
+                    <i data-lucide="clock" class="w-4 h-4 mr-1 text-accent"></i> Last Updated:
+                </p>
+                <p class="text-lg font-bold text-gray-800">
+                    {{ task.updated_at|date:"M d, Y H:i" }}
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="mt-8 flex flex-col sm:flex-row justify-end space-y-4 sm:space-y-0 sm:space-x-4">
+        
+        <!-- Toggle Completion Button -->
+        <form method="post" action="{% url 'task_toggle' task.pk %}" class="w-full sm:w-auto">
+            {% csrf_token %}
+            <button type="submit" class="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-full shadow-lg text-white transition duration-150 transform hover:scale-105
+                {% if task.is_completed %}bg-yellow-500 hover:bg-yellow-600 focus:ring-yellow-500{% else %}bg-green-500 hover:bg-green-600 focus:ring-green-500{% endif %}
+                focus:outline-none focus:ring-2 focus:ring-offset-2">
+                <i data-lucide="{% if task.is_completed %}refresh-cw{% else %}check-check{% endif %}" class="w-5 h-5 mr-2"></i> 
+                {% if task.is_completed %}Mark as Pending{% else %}Mark as Completed{% endif %}
+            </button>
+        </form>
+
+        <!-- Edit Button -->
+        <a href="{% url 'task_update' task.pk %}" class="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-full shadow-lg text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 transform hover:scale-105">
+            <i data-lucide="edit-3" class="w-5 h-5 mr-2"></i> Edit Task
+        </a>
+        
+        <!-- Delete Button -->
+        <a href="{% url 'task_delete' task.pk %}" class="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-full shadow-lg text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition duration-150 transform hover:scale-105">
+            <i data-lucide="trash-2" class="w-5 h-5 mr-2"></i> Delete
+        </a>
+    </div>
+
+    <!-- Back Button -->
+    <div class="mt-8 text-center">
+        <a href="{% url 'tasks' %}" class="text-primary hover:text-indigo-700 transition duration-150 inline-flex items-center font-medium">
+            <i data-lucide="arrow-left" class="w-4 h-4 mr-2"></i> Back to Task List
+        </a>
+    </div>
+
+</div>
+
+<!-- Initialize Lucide Icons for the new content -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        lucide.createIcons();
+    });
+</script>
+{% endblock content %}

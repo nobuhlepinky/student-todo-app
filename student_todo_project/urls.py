@@ -21,6 +21,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     # The 'todo_app/' path handles all application logic (Tasks, Notes, Dashboard)
     path('', include('todo_app.urls')),
+    # Include Django's built-in authentication views (login, logout, password reset, etc.)
+    path('accounts/', include('django.contrib.auth.urls')),
     
     # The 'login/', 'logout/', and 'register/' paths use Django's built-in auth views
     # handled directly in the todo_app's urls.py now.
